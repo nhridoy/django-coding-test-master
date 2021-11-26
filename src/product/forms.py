@@ -1,4 +1,4 @@
-from django.forms import forms, ModelForm, CharField, TextInput, Textarea, BooleanField, CheckboxInput
+from django.forms import ModelForm, TextInput, Textarea, CheckboxInput
 
 from product.models import Variant
 

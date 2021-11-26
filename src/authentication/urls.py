@@ -1,9 +1,7 @@
-from django.contrib.auth import views as auth_views
-from django.template.base import kwarg_re
-from django.urls import path
-
 from authentication.forms import LoginForm
 from authentication.views import DashboardView
+from django.contrib.auth import views as auth_views
+from django.urls import path
 
 urlpatterns = [
     path('', auth_views.LoginView.as_view(

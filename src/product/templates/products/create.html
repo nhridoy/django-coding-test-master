@@ -2,14 +2,177 @@
 
 {% block title %} Create Product {% endblock %}
 
+{% block css %}
+
+{% endblock %}
 {% block content %}
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Create Product</h1>
-    <a href="{% url 'product:create.product' %}" class="float-right btn btn-primary">All Product</a>
-</div>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Product</h1>
+        <a href="{% url 'product:create.product' %}" class="float-right btn btn-primary">All Product</a>
+    </div>
 
-<div id="app">
-    <create-product :variants="{{variants|safe}}"></create-product>
-</div>
+    <div>
+        <section>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="product_name">Product Name</label>
+                                    <input type="text" name="product_name" id="product_name" placeholder="Product Name"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product_sku">Product SKU</label>
+                                    <input type="text" name="product_sku" id="product_sku" placeholder="Product Name"
+                                           class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea name="description" id="description" cols="30" rows="4"
+                                              class="form-control" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Media</h6>
+                            </div>
+                            <div class="card-body border">
+                                <input name="file" type="file" multiple required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Variants</h6>
+                            </div>
+                            <div class="card-body" id="variants">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="option">Option</label>
+                                            <select name="option" id="option" class="form-control" required>
+                                                <option selected disabled>----------</option>
+                                                {% for variant in variants %}
+                                                    {% ifchanged %}
+                                                        <option value="{{ variant.title }}">
+                                                            {{ variant.title }}
+                                                        </option>
+                                                    {% endifchanged %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label id="remove" class="float-right text-primary"
+                                                   style="cursor: pointer;">Remove</label>
+                                            <label for="tags">.</label>
+                                            <select multiple id="tags" name="tags"
+                                                    class="form-control js-example-basic-multiple" required>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" id="add" class="btn btn-primary">Add another option</button>
+                            </div>
+
+                            <div class="card-header text-uppercase">Preview</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <td>Price</td>
+                                            <td>Stock</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbody">
+                                        <tr id="tr">
+                                            <td>
+                                                <input type="text" class="form-control" name="variant_price"
+                                                       required>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="variant_stock"
+                                                       required>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-lg btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary btn-lg">Cancel</button>
+            </form>
+
+        </section>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        let addBtn = document.getElementById('add')
+        let variants = document.getElementById('variants')
+        let tags = document.getElementById('tags')
+        let tbody = document.getElementById('tbody')
+        let tr = document.getElementById('tr')
+
+        {#tags.addEventListener('change', (e) => {#}
+        {#    console.log(e.target.value)#}
+        {#})#}
+            addBtn.addEventListener('click', (e) => {
+                let ch = e.target.parentElement.previousElementSibling.firstElementChild
+                variants.insertAdjacentHTML('beforeend', ch.outerHTML)
+            })
+            document.addEventListener('mousedown', (e) => {
+                let option = document.querySelectorAll('#option');
+                option.forEach((item) => {
+                    item.addEventListener('change', (e) => {
+                        let tag = item.parentElement.parentElement.nextElementSibling.firstElementChild.lastElementChild
+                        let val = e.target.value;
+                        fetch(`${window.origin}/product/variantsapi/${val}/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                tag.innerHTML = ''
+                                data.map((item, index) => {
+                                    var node = document.createElement("option");
+                                    node.setAttribute('value', item.description)
+                                    var textnode = document.createTextNode(item.description);
+                                    node.appendChild(textnode);
+                                    tag.setAttribute('name', `tag_${val}`)
+                                    tag.appendChild(node);
+                                })
+                                {#$('.js-example-basic-multiple').select2();#}
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    })
+                })
+
+                let remove = document.querySelectorAll('#remove')
+                remove.forEach((item, index) => {
+                    item.addEventListener('click', (e) => {
+                        e.target.parentElement.parentElement.parentElement.outerHTML = ''
+                    })
+                })
+            })
+
+    </script>
 {% endblock %}
