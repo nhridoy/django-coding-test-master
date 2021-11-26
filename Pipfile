@@ -9,6 +9,8 @@ django-dotenv = "*"
 mysqlclient = "*"
 django-extensions = "*"
 djangorestframework = "*"
+django-cleanup = "*"
+django-filter = "*"
 
 [dev-packages]
 

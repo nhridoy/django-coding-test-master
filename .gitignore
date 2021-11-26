@@ -3,6 +3,7 @@ src/.env
 src/.env.backup
 static
 media
+src/media
 *.pyc
 env
 venv
