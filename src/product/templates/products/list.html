@@ -16,9 +16,14 @@
                     <input type="text" name="title" placeholder="Product Title" class="form-control" required>
                 </div>
                 <div class="col-md-2">
-                    <select name="variant" id="" class="form-control" required>
-                        <option disabled>--Select A Variant--</option>
+                    <select name="variant" id="" class="form-control js-example-basic-single" required>
+
                         {% for variant in variants %}
+                            {% ifchanged %}
+                                <optgroup label="{{ variant.title }}">
+
+                                </optgroup>
+                            {% endifchanged %}
                             <option value="{{ variant.description }}">{{ variant.description }}</option>
                         {% endfor %}
                     </select>
@@ -31,7 +36,8 @@
                         </div>
                         <input type="text" name="price_from" aria-label="First name" placeholder="From"
                                class="form-control" required>
-                        <input type="text" name="price_to" aria-label="Last name" placeholder="To" class="form-control" required>
+                        <input type="text" name="price_to" aria-label="Last name" placeholder="To" class="form-control"
+                               required>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -150,4 +156,12 @@
 
 
 
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
 {% endblock %}
