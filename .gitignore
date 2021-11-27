@@ -3,7 +3,7 @@ src/.env
 src/.env.backup
 static
 media
-src/media
+#src/media
 *.pyc
 env
 venv
@@ -14,4 +14,4 @@ src/*/package.lock
 Pipfile.lock
 node_modules
 package-lock.json
-src/db.sqlite3
+#src/db.sqlite3

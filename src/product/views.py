@@ -31,6 +31,8 @@ def CreateProductView(request):
     tag_sizes = request.POST.getlist('tag_size')
     variant_price = request.POST.get('variant_price')
     variant_stock = request.POST.get('variant_stock')
+    # print(tag_colors)
+    # print(tag_sizes)
     if request.method == 'POST':
         product = Product.objects.create(title=request.POST.get('product_name'), sku=request.POST.get('product_sku'),
                                          description=request.POST.get('description'))
@@ -68,7 +70,7 @@ class ColorSizeApi(generics.ListAPIView):
 
     def get_queryset(self):
         title = self.kwargs['title']
-        return Variant.objects.filter(title=title)
+        return Variant.objects.filter(title__iexact=title)
 
 
 # Variants
@@ -130,9 +132,10 @@ class ProductListView(ListView):
             variant = self.request.GET['variant']
             date = self.request.GET['date']
             # print(datetime.date(date))
+
             return Product.objects.filter(title__icontains=title,
                                           productvariantprice__price__range=(price_from, price_to),
-                                          productvariant__variant__description__icontains=variant, created_at__date=date)
+                                          productvariant__variant__description__icontains=variant, created_at__date=date).distinct()
         except:
             return Product.objects.all()
 

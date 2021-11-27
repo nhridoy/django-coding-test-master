@@ -62,8 +62,8 @@
                                                 <option selected disabled>----------</option>
                                                 {% for variant in variants %}
                                                     {% ifchanged %}
-                                                        <option value="{{ variant.title }}">
-                                                            {{ variant.title }}
+                                                        <option value="{{ variant.title|lower }}">
+                                                            {{ variant.title|lower }}
                                                         </option>
                                                     {% endifchanged %}
                                                 {% endfor %}
