@@ -19,6 +19,10 @@ npm install
 ```commandline
 pipenv install
 ```
+or using your installed python version
+```commandline
+pipenv install --python=3.10
+```
 #### Generate Static Files
 ```commandline
 npm run watch
@@ -44,4 +48,12 @@ python manage.py createsuperuser
 #### Start server
 ```commandline
 python manage.py runserver
+```
+### This project is using SQLite Database
+#### Current Admin username and password is
+```
+admin
+```
+```
+admin
 ```
